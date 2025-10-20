@@ -25,19 +25,25 @@ public class CalculatorController {
         }
 
         try {
-            // 구분자 결정
-            String delimiter = parser.resolveDelimiter(input); // 기본 [,:] 또는 커스텀 한 글자
-            String numbers   = parser.extractNumbers(input);   // 커스텀이면 \n 뒤, 아니면 전체
+            final String delimiter;
+            final String numbers;
 
-            // 합산
+            if (input.startsWith("//")) {
+                // 첫 줄 헤더만 보고 구분자 결정
+                delimiter = parser.resolveDelimiter(input); // "//<문자>"
+                // 둘째 줄에서 숫자 읽기
+                numbers = in.read();
+            } else {
+                // 기본 구분자 케이스는 한 줄 입력
+                delimiter = parser.resolveDelimiter(input); // "[,:]"
+                numbers   = parser.extractNumbers(input);   // == input
+            }
+
             int result = calc.add(numbers, delimiter);
-
-            // 출력
             out.print(result);
         } catch (IllegalArgumentException e) {
-            // 요구사항: 예외 발생 후 애플리케이션 종료(별도 System.exit() 금지)
             System.out.println(e.getMessage());
-            throw e;
+            throw e; // 테스트가 예외를 감지하도록 재던지기
         }
     }
 }
