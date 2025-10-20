@@ -9,22 +9,22 @@ public class DelimiterParser {
     public String resolveDelimiter(String input) {
         if (!input.startsWith("//")) return DEFAULT;
 
-        int idx = input.indexOf("\n");
-        if (idx == -1) {
+        int delimiterIndex = input.indexOf("\n");
+        if (delimiterIndex == -1) {
             throw new IllegalArgumentException("커스텀 구분자 형식 오류: //과 \n 사이에 구분자, 이후 숫자");
         }
 
-        String custom = input.substring(2, idx);
+        String customDelimiter = input.substring(2, delimiterIndex);
 
-        if (custom.isEmpty()) {
+        if (customDelimiter.isEmpty()) {
             throw new IllegalArgumentException("커스텀 구분자가 비어 있습니다.");
         }
-        if (custom.length() != 1) {
+        if (customDelimiter.length() != 1) {
             throw new IllegalArgumentException("커스텀 구분자는 한 글자여야 합니다.");
         }
 
         // 정규식 메타문자 안전 처리
-        return Pattern.quote(custom);
+        return Pattern.quote(customDelimiter);
     }
 
     // 숫자 부분을 추출(커스텀이면 \n 뒤, 아니면 전체)
