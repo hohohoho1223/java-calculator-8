@@ -26,4 +26,16 @@ public class DelimiterParser {
         // 정규식 메타문자 안전 처리
         return Pattern.quote(custom);
     }
+
+    // 숫자 부분을 추출(커스텀이면 \n 뒤, 아니면 전체)
+    public String extractNumbers(String input) {
+        if (!input.startsWith("//")) return input;
+
+        int idx = input.indexOf("\n");
+        // resolveDelimiter에서 이미 검증했지만, 방어 로직 유지
+        if (idx == -1) {
+            throw new IllegalArgumentException("커스텀 구분자 형식 오류: 줄바꿈(\\n) 누락");
+        }
+        return input.substring(idx + 1);
+    }
 }
