@@ -37,6 +37,7 @@ public class CalculatorController {
         } catch (IllegalArgumentException e) {
             // 요구사항: 예외 발생 후 애플리케이션 종료(별도 System.exit() 금지)
             System.out.println(e.getMessage());
+            throw e;
         }
     }
 }
