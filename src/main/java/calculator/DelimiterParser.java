@@ -1,7 +1,5 @@
 package calculator;
 
-import java.util.regex.Pattern;
-
 public class DelimiterParser {
     private static final String DEFAULT = "[,:]";
 
@@ -9,12 +7,11 @@ public class DelimiterParser {
     public String resolveDelimiter(String input) {
         if (!input.startsWith("//")) return DEFAULT;
 
-        int delimiterIndex = input.indexOf("\n");
-        if (delimiterIndex == -1) {
-            throw new IllegalArgumentException("커스텀 구분자 형식 오류: //과 \n 사이에 구분자, 이후 숫자");
-        }
+        // readLine() 결과엔 보통 '\n'이 없으므로, 있으면 거기까지 / 없으면 라인 끝까지
+        int nl = input.indexOf('\n');
+        int cut = (nl == -1) ? input.length() : nl;
 
-        String customDelimiter = input.substring(2, delimiterIndex);
+        String customDelimiter = input.substring(2, cut);
 
         if (customDelimiter.isEmpty()) {
             throw new IllegalArgumentException("커스텀 구분자가 비어 있습니다.");
@@ -22,20 +19,13 @@ public class DelimiterParser {
         if (customDelimiter.length() != 1) {
             throw new IllegalArgumentException("커스텀 구분자는 한 글자여야 합니다.");
         }
-
-        // 정규식 메타문자 안전 처리
-        return Pattern.quote(customDelimiter);
+        return java.util.regex.Pattern.quote(customDelimiter);
     }
 
     // 숫자 부분을 추출(커스텀이면 \n 뒤, 아니면 전체)
-    public String extractNumbers(String input) {
-        if (!input.startsWith("//")) return input;
 
-        int idx = input.indexOf("\n");
-        // resolveDelimiter에서 이미 검증했지만, 방어 로직 유지
-        if (idx == -1) {
-            throw new IllegalArgumentException("커스텀 구분자 형식 오류: 줄바꿈(\\n) 누락");
-        }
-        return input.substring(idx + 1);
+    // extractNumbers(String input)는 기본 구분자 케이스에서만 사용
+    public String extractNumbers(String input) {
+        return input; // 기본 입력은 한 줄로 들어오므로 그대로 반환
     }
 }
